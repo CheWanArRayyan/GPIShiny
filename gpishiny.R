@@ -4,9 +4,23 @@ library(dplyr)
 library(shinythemes)
 library(maps)
 library(scales)
+library(DT)
 GPI <- read.csv("gpi.csv")
 
 ui<-fluidPage(navbarPage(theme = shinytheme("readable"),  "GLOBAL PEACE INDEX VISUALIZER",
+                         
+                         tabPanel("Welcome", icon = icon("hand-spock"),
+                                  h1("Welcome, curious beings!", align = "center"),
+                                  br(),
+                                  h3("Quick tab guide", align = "center"),
+                                  h4("Charts : GPI score & rank in line chart", align = "center"),
+                                  h4("Map : GPI score visualized over a  map", align = "center"),
+                                  h4("About : Information about the project", align = "center"),
+                                  br(),
+                                  h4("We hope this app brings new insights to you!", align = "center"),
+                                  
+                                  
+                                  ),
                          
                          navbarMenu("Charts", icon = icon("chart-line"),
                          
@@ -80,15 +94,15 @@ ui<-fluidPage(navbarPage(theme = shinytheme("readable"),  "GLOBAL PEACE INDEX VI
            p('The dataset was taken from The Vision of Humanity, which was then uploaded to Kaggle'),
            p('Access the free dataset', a('here',href= 'https://www.kaggle.com/xenohunter/global-peace-index')),
            br(),
-           h4('The team'),
+           h4('Peacekeepers member'),
            p('Aniq'),
            p('Syaza'),
            p('Sudarshan'),
            p('Che Wan'),
            br()
          ),
-         mainPanel(
-           h2(strong("Indicators of Peace")),
+         mainPanel(tabsetPanel(type = "tab", tabPanel("Indicators of Peace",
+           #h2(strong("Indicators of Peace")),
            
            
            h4('1. Intensity of Organised Internal Conflict '),
@@ -303,11 +317,17 @@ as “a contested incompatibility that concerns government and/or
 territory where the use of armed force between two parties, results
 in at least 25 battle-related deaths in a year”.'),br()
            
-         )
+         ),
+         
+         tabPanel("Full dataset",br(), DT::dataTableOutput("score"))
+         
+         ))
          
 )))
 
 server <- function(input,output){
+  
+  output$score <- DT::renderDataTable({score})
   
   output$map <- renderPlot({
     
